@@ -14,7 +14,7 @@
         #error Mask version not supported on ARDUINO_ARCH_SAMD
     #endif
 
-#elif ARDUINO_ARCH_ESP8266
+#elif defined(ARDUINO_ARCH_ESP8266)
     // predefined global instance for IP only
     #if MASK_VERSION == 0x57B0
         KnxFacade<EspPlatform, Bau57B0> knx;
@@ -22,7 +22,7 @@
         #error Mask version not supported on ARDUINO_ARCH_ESP8266
     #endif
 
-#elif ARDUINO_ARCH_ESP32
+#elif defined(ARDUINO_ARCH_ESP32)
     // predefined global instance for TP or IP or TP/IP coupler
     #if MASK_VERSION == 0x07B0
         KnxFacade<Esp32Platform, Bau07B0> knx;
@@ -34,26 +34,36 @@
         #error Mask version not supported on ARDUINO_ARCH_ESP8266
     #endif
 
-#elif ARDUINO_ARCH_STM32
+#elif defined(ARDUINO_ARCH_STM32)
     #if MASK_VERSION == 0x07B0
         KnxFacade<Stm32Platform, Bau07B0> knx;
     #else
         #error Mask version not supported on ARDUINO_ARCH_STM32
     #endif
-#elif __linux__
+#else // Non-Arduino platforms and Linux platform
     // no predefined global instance
 #endif
 
+// Only ESP8266 and ESP32 have this define. For all other platforms this is just empty.
 #ifndef ICACHE_RAM_ATTR
     #define ICACHE_RAM_ATTR
 #endif
+
+#if (defined(ARDUINO_ARCH_STM32) || \
+     defined(ARDUINO_ARCH_ESP32) || \
+     defined(ARDUINO_ARCH_ESP8266) || \
+     defined(ARDUINO_ARCH_SAMD))
 ICACHE_RAM_ATTR void buttonUp()
 {
-    #ifndef __linux__
     static uint32_t lastpressed=0;
     if (millis() - lastpressed > 200){
         knx._toogleProgMode = true;
         lastpressed = millis();
     }
-    #endif
 }
+#elif defined(__linux__)
+void buttonUp()
+{
+    // no de-bounce on linux platform, just satisfy the compiler
+}
+#endif
