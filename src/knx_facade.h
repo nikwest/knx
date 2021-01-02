@@ -33,6 +33,11 @@
    #include "knx/bau091A.h"
    #include "knx/bau2920.h"
    void buttonUp();
+#elif __ZEPHYR__
+   #define LED_BUILTIN 0
+   #include "zephyr_platform.h"
+   #include "knx/bau07B0.h"
+   void buttonUp();
 #else
    #define LED_BUILTIN 5 // see GPIO_PinConfig gpioPinConfigs[]
    #include "cc1310_platform.h"

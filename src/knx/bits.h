@@ -5,6 +5,8 @@
 
 #if defined(__linux__)
 #include <arpa/inet.h>
+#elif defined(__ZEPHYR__)
+#include <net/net_ip.h>
 #elif defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_ARCH_STM32) || defined (DeviceFamily_CC13X0)
 #define getbyte(x,n) (*(((uint8_t*)&(x))+n))
 #define htons(x)  ( (getbyte(x,0)<<8) | getbyte(x,1) ) 
