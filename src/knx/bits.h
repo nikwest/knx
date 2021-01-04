@@ -92,3 +92,18 @@ uint64_t sixBytesToUInt64(uint8_t* data);
 
 uint16_t crc16Ccitt(uint8_t* input, uint16_t length);
 uint16_t crc16Dnp(uint8_t* input, uint16_t length);
+
+enum ParameterFloatEncodings
+{
+    Float_Enc_DPT9 = 0,          // 2 Byte. See Chapter 3.7.2 section 3.10 (Datapoint Types 2-Octet Float Value)
+    Float_Enc_IEEE754Single = 1, // 4 Byte. C++ float
+    Float_Enc_IEEE754Double = 2, // 8 Byte. C++ double
+};
+
+
+#if defined(ARDUINO_ARCH_SAMD)
+// temporary undef until framework-arduino-samd > 1.8.9 is released. See https://github.com/arduino/ArduinoCore-samd/pull/399 for a PR should will probably address this
+#undef max
+#undef min
+// end of temporary undef
+#endif
